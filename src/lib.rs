@@ -19,4 +19,5 @@ pub use config::{Config, config, resolve_repo_path};
 pub use error::{GitError, GitErrorKind, build_tool_error};
 pub use render::ResponseFormat;
 pub use server::GitMcp;
-pub use types::{CommitInfo, DiffSummary, FileStatus, GitStatusResult};
+pub use services::context::ContextSummary;
+pub use types::{BranchInfo, CommitInfo, DiffSummary, FileStatus, GitStatusResult, RemoteInfo};

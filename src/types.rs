@@ -21,6 +21,36 @@ pub struct CommitInfo {
     pub subject: String,
 }
 
+/// A branch as reported by `git branch`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct BranchInfo {
+    /// Branch name.
+    pub name: String,
+    /// True when the branch is checked out.
+    pub is_current: bool,
+    /// Abbreviated tip commit.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub commit: Option<String>,
+    /// Upstream tracking branch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub upstream: Option<String>,
+}
+
+/// A configured remote.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct RemoteInfo {
+    /// Remote name.
+    pub name: String,
+    /// Fetch URL, with credentials and opaque tokens redacted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fetch_url: Option<String>,
+    /// Push URL, with credentials and opaque tokens redacted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub push_url: Option<String>,
+}
+
 /// One entry of `git status --porcelain`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "camelCase")]

@@ -11,7 +11,7 @@ use serde_json::json;
 
 use crate::constants::{SERVER_NAME, SERVER_VERSION};
 use crate::error::into_tool_result;
-use crate::tools::grouped::{history, status};
+use crate::tools::grouped::{branches, commits, context, history, remotes, status, workspace};
 use crate::tools::ok_result;
 
 /// The Git MCP server.
@@ -106,6 +106,101 @@ impl GitMcp {
         Parameters(args): Parameters<history::HistoryArgs>,
     ) -> Result<CallToolResult, ErrorData> {
         into_tool_result(history::run(&args).await)
+    }
+
+    /// Commit-area tool.
+    #[tool(
+        name = "git_commits",
+        description = "Commit-area tool. Use action=add|restore|commit|reset|revert|undo|nuke|wip|unstage|amend.",
+        annotations(
+            title = "Git Commit Tools",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_commits(
+        &self,
+        Parameters(args): Parameters<commits::CommitArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(commits::run(&args).await)
+    }
+
+    /// Branch tool.
+    #[tool(
+        name = "git_branches",
+        description = "Branch tool. Use action=list|create|delete|rename|checkout|set_upstream|recent for branch workflows.",
+        annotations(
+            title = "Git Branch Tools",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_branches(
+        &self,
+        Parameters(args): Parameters<branches::BranchArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(branches::run(&args).await)
+    }
+
+    /// Remote tool.
+    #[tool(
+        name = "git_remotes",
+        description = "Remote tool. Use action=list|manage|fetch|pull|push for network/transport operations.",
+        annotations(
+            title = "Git Remote Tools",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = true
+        )
+    )]
+    async fn git_remotes(
+        &self,
+        Parameters(args): Parameters<remotes::RemoteArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(remotes::run(&args).await)
+    }
+
+    /// Workspace tool.
+    #[tool(
+        name = "git_workspace",
+        description = "Workspace tool for stash/rebase/cherry-pick/merge/bisect/tag/worktree/submodule actions plus stash_all shortcut.",
+        annotations(
+            title = "Git Workspace Tools",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_workspace(
+        &self,
+        Parameters(args): Parameters<workspace::WorkspaceArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(workspace::run(&args).await)
+    }
+
+    /// Context/config tool.
+    #[tool(
+        name = "git_context",
+        description = "Context/config tool. Use action=summary|search|get_config|set_config|aliases for repo context operations.",
+        annotations(
+            title = "Git Context Tools",
+            read_only_hint = false,
+            idempotent_hint = true,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_context(
+        &self,
+        Parameters(args): Parameters<context::ContextArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(context::run(&args).await)
     }
 }
 

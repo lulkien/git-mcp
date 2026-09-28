@@ -141,7 +141,16 @@ fn lists_the_registered_tools() {
         .map(|tool| tool["name"].as_str().unwrap())
         .collect();
 
-    for expected in ["git_ping", "git_status", "git_history"] {
+    for expected in [
+        "git_ping",
+        "git_status",
+        "git_history",
+        "git_commits",
+        "git_branches",
+        "git_remotes",
+        "git_workspace",
+        "git_context",
+    ] {
         assert!(
             names.contains(&expected),
             "missing tool {expected} in {names:?}"
