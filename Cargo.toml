@@ -19,11 +19,11 @@ rmcp = { version = "3.5", features = [
 schemars = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-tokio = { version = "1", features = ["macros", "rt-multi-thread", "process"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "process", "time"] }
 url = "2"
+tempfile = "3"
 
 [dev-dependencies]
-tempfile = "3"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [lints.clippy]
@@ -35,3 +35,6 @@ missing_errors_doc = { level = "allow", priority = 1 }
 # MCP argument structs mirror a wide tool schema on purpose: one flat struct is
 # the wire contract, so the bool count is inherent to the schema.
 struct_excessive_bools = { level = "allow", priority = 1 }
+# Product names in prose (GitButler, Jujutsu, the `but`/`jj` CLIs) read better
+# unquoted than as code spans in every sentence.
+doc_markdown = { level = "allow", priority = 1 }

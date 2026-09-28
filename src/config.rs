@@ -57,7 +57,7 @@ pub struct Config {
     pub allow_force_push: bool,
     /// `git-flow` hooks and filters may be executed.
     pub allow_flow_hooks: bool,
-    /// `GitButler` awareness tools enabled.
+    /// GitButler awareness tools enabled.
     pub allow_but: bool,
     /// Jujutsu awareness tools enabled.
     pub allow_jj: bool,

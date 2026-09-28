@@ -1,6 +1,7 @@
 //! Git adapter: repository/path validation and `git` CLI execution.
 
 pub mod client;
+pub mod external;
 pub mod runner;
 
 pub use client::{

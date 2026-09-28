@@ -1,7 +1,10 @@
 //! MCP tool handlers. Handlers validate input, delegate to a service, and
 //! render the response; they contain no Git logic.
 
+pub mod analytics;
+pub mod external;
 pub mod grouped;
+pub mod rewrite;
 pub mod workspace;
 
 use rmcp::model::{CallToolResult, ContentBlock};

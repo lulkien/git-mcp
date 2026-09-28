@@ -11,8 +11,11 @@ use serde_json::json;
 
 use crate::constants::{SERVER_NAME, SERVER_VERSION};
 use crate::error::into_tool_result;
+use crate::tools::analytics;
+use crate::tools::external;
 use crate::tools::grouped::{branches, commits, context, history, remotes, status, workspace};
 use crate::tools::ok_result;
+use crate::tools::rewrite;
 use crate::tools::workspace::{
     bisect, cherry_pick, merge, rebase, stash, submodule, tag, worktree,
 };
@@ -356,6 +359,120 @@ impl GitMcp {
         Parameters(args): Parameters<submodule::SubmoduleArgs>,
     ) -> Result<CallToolResult, ErrorData> {
         into_tool_result(submodule::run(&args).await)
+    }
+
+    /// Check whether the GitButler CLI is available.
+    #[tool(
+        name = "git_but_check",
+        description = "Detects whether the GitButler `but` CLI is available and returns guidance on whether to prefer `but mcp` / `but` commands over git-mcp tools. When `but` is present, agents should prefer GitButler for version control and run `but teardown` before using git-mcp tools on a GitButler-managed repository.",
+        annotations(
+            title = "Check GitButler Availability",
+            read_only_hint = true,
+            idempotent_hint = true,
+            destructive_hint = false,
+            open_world_hint = false
+        )
+    )]
+    async fn git_but_check(
+        &self,
+        Parameters(args): Parameters<external::ButCheckArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(external::run_but(&args).await)
+    }
+
+    /// Check whether Jujutsu is available and whether the repo is jj-managed.
+    #[tool(
+        name = "git_jj_check",
+        description = "Detect whether the Jujutsu `jj` CLI is available and whether the repository is jj-managed (has a .jj/ directory). When jj-managed, agents should prefer the `jj` CLI for all version control operations, since git-mcp tools operate on the underlying .git and will not reflect jj's change model.",
+        annotations(
+            title = "Check Jujutsu Availability",
+            read_only_hint = true,
+            idempotent_hint = true,
+            destructive_hint = false,
+            open_world_hint = false
+        )
+    )]
+    async fn git_jj_check(
+        &self,
+        Parameters(args): Parameters<external::RepoCheckArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(external::run_jj(&args).await)
+    }
+
+    /// Check whether the repository is hosted on Tangled.
+    #[tool(
+        name = "git_tangled_check",
+        description = "Detect whether the repository origin remote points at a Tangled host (tangled.org or a self-hosted knot). Tangled is a decentralized Git host on the AT Protocol — git transport works normally via git-mcp tools, but there is no PR/MR surface.",
+        annotations(
+            title = "Check Tangled Hosting",
+            read_only_hint = true,
+            idempotent_hint = true,
+            destructive_hint = false,
+            open_world_hint = false
+        )
+    )]
+    async fn git_tangled_check(
+        &self,
+        Parameters(args): Parameters<external::RepoCheckArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(external::run_tangled(&args).await)
+    }
+
+    /// Check whether the Entire CLI is available and whether the repo is managed.
+    #[tool(
+        name = "git_entire_check",
+        description = "Detect whether the Entire CLI is available and whether the repository is Entire-managed (has a .entire/ directory). When managed, agents should use the `entire` CLI for session, checkpoint, and attribution queries; git-mcp tools do not expose Entire's context layer.",
+        annotations(
+            title = "Check Entire Availability",
+            read_only_hint = true,
+            idempotent_hint = true,
+            destructive_hint = false,
+            open_world_hint = false
+        )
+    )]
+    async fn git_entire_check(
+        &self,
+        Parameters(args): Parameters<external::RepoCheckArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(external::run_entire(&args).await)
+    }
+
+    /// History rewrite tool.
+    #[tool(
+        name = "git_rewrite",
+        description = "Rewrite commit history. Use action=reword|squash|rewrite-messages|backup|restore. History rewriting changes commit hashes and requires force-push; create a backup first.",
+        annotations(
+            title = "Git History Rewrite",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_rewrite(
+        &self,
+        Parameters(args): Parameters<rewrite::RewriteArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(rewrite::run(&args).await)
+    }
+
+    /// Repository analytics tool.
+    #[tool(
+        name = "git_analytics",
+        description = "Read-only repository analytics computed from local git history. Use action=contributors|churn|activity|summary|file-stats.",
+        annotations(
+            title = "Git Repository Analytics",
+            read_only_hint = true,
+            idempotent_hint = true,
+            destructive_hint = false,
+            open_world_hint = false
+        )
+    )]
+    async fn git_analytics(
+        &self,
+        Parameters(args): Parameters<analytics::AnalyticsArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(analytics::run(&args).await)
     }
 }
 
