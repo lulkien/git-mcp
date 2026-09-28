@@ -158,6 +158,14 @@ fn lists_the_registered_tools() {
         "git_tag",
         "git_worktree",
         "git_submodule",
+        "git_rewrite",
+        "git_analytics",
+        "git_but_check",
+        "git_jj_check",
+        "git_tangled_check",
+        "git_entire_check",
+        "git_lfs",
+        "git_docs",
     ] {
         assert!(
             names.contains(&expected),

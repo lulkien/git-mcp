@@ -2,8 +2,10 @@
 //! render the response; they contain no Git logic.
 
 pub mod analytics;
+pub mod docs;
 pub mod external;
 pub mod grouped;
+pub mod lfs;
 pub mod rewrite;
 pub mod workspace;
 

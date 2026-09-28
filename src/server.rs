@@ -12,8 +12,10 @@ use serde_json::json;
 use crate::constants::{SERVER_NAME, SERVER_VERSION};
 use crate::error::into_tool_result;
 use crate::tools::analytics;
+use crate::tools::docs;
 use crate::tools::external;
 use crate::tools::grouped::{branches, commits, context, history, remotes, status, workspace};
+use crate::tools::lfs;
 use crate::tools::ok_result;
 use crate::tools::rewrite;
 use crate::tools::workspace::{
@@ -473,6 +475,44 @@ impl GitMcp {
         Parameters(args): Parameters<analytics::AnalyticsArgs>,
     ) -> Result<CallToolResult, ErrorData> {
         into_tool_result(analytics::run(&args).await)
+    }
+
+    /// Git LFS tool.
+    #[tool(
+        name = "git_lfs",
+        description = "Manage Git Large File Storage (LFS). Supports tracking/untracking file patterns, listing LFS-tracked files and status, pulling/pushing LFS objects, installing LFS hooks for the repository, and migrating existing files into or out of LFS storage.",
+        annotations(
+            title = "Git LFS Actions",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = true
+        )
+    )]
+    async fn git_lfs(
+        &self,
+        Parameters(args): Parameters<lfs::LfsArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(lfs::run(&args).await)
+    }
+
+    /// Documentation tool.
+    #[tool(
+        name = "git_docs",
+        description = "Search and browse official Git documentation from git-scm.com. Use action=\"search\" to find relevant commands and concepts by keyword. Use action=\"man\" to fetch the full man page for a specific git command (e.g. query=\"commit\" fetches the git-commit man page). Useful for answering questions about how to use git commands, understanding options, and discovering the right git command for a task.",
+        annotations(
+            title = "Git Documentation",
+            read_only_hint = true,
+            idempotent_hint = true,
+            destructive_hint = false,
+            open_world_hint = true
+        )
+    )]
+    async fn git_docs(
+        &self,
+        Parameters(args): Parameters<docs::DocsArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(docs::run(&args).await)
     }
 }
 

@@ -10,6 +10,7 @@ categories = ["development-tools", "command-line-utilities"]
 
 [dependencies]
 regex = "1"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "charset", "http2"] }
 rmcp = { version = "3.5", features = [
     "server",
     "macros",
