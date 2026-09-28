@@ -150,6 +150,14 @@ fn lists_the_registered_tools() {
         "git_remotes",
         "git_workspace",
         "git_context",
+        "git_stash",
+        "git_rebase",
+        "git_cherry_pick",
+        "git_merge",
+        "git_bisect",
+        "git_tag",
+        "git_worktree",
+        "git_submodule",
     ] {
         assert!(
             names.contains(&expected),

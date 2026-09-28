@@ -17,7 +17,7 @@ use crate::services::remote::{
     FetchOptions, ManageRemoteOptions, PullOptions, PushOptions, RemoteManageAction, fetch_remote,
     list_remotes, manage_remote, pull_remote, push_remote,
 };
-use crate::tools::ok_result;
+use crate::tools::{ok_result, output_result};
 
 /// Action selected by the `action` parameter.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, JsonSchema)]
@@ -342,9 +342,4 @@ fn completed(value: &str, placeholder: &str) -> String {
     } else {
         value.to_owned()
     }
-}
-
-fn output_result(output: &str, format: ResponseFormat) -> Result<CallToolResult, GitError> {
-    let text = render_content(&to_value(output)?, format)?;
-    Ok(ok_result(text, json!({ "output": output })))
 }

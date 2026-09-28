@@ -11,7 +11,7 @@ use crate::services::branch::{
     CreateBranchOptions, DeleteBranchOptions, checkout_ref, create_branch, delete_branch,
     list_branches, recent_branches, rename_branch, set_upstream,
 };
-use crate::tools::ok_result;
+use crate::tools::{ok_result, output_result};
 
 /// Action selected by the `action` parameter.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, JsonSchema)]
@@ -167,9 +167,4 @@ pub async fn run(args: &BranchArgs) -> Result<CallToolResult, GitError> {
             output_result(&output, args.response_format)
         }
     }
-}
-
-fn output_result(output: &str, format: ResponseFormat) -> Result<CallToolResult, GitError> {
-    let text = render_content(&to_value(output)?, format)?;
-    Ok(ok_result(text, json!({ "output": output })))
 }

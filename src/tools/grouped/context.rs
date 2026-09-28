@@ -9,7 +9,7 @@ use crate::error::{GitError, to_value};
 use crate::git::Git;
 use crate::render::{ResponseFormat, render_content};
 use crate::services::context::{get_config, get_context_summary, search_history, set_config};
-use crate::tools::ok_result;
+use crate::tools::{ok_result, output_result};
 
 /// Action selected by the `action` parameter.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, JsonSchema)]
@@ -108,9 +108,4 @@ pub async fn run(args: &ContextArgs) -> Result<CallToolResult, GitError> {
             output_result(&output, args.response_format)
         }
     }
-}
-
-fn output_result(output: &str, format: ResponseFormat) -> Result<CallToolResult, GitError> {
-    let text = render_content(&to_value(output)?, format)?;
-    Ok(ok_result(text, json!({ "output": output })))
 }

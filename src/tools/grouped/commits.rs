@@ -5,15 +5,14 @@ use std::path::Path;
 use rmcp::model::CallToolResult;
 use rmcp::schemars::JsonSchema;
 use serde::Deserialize;
-use serde_json::json;
 
-use crate::error::{GitError, to_value};
-use crate::render::{ResponseFormat, render_content};
+use crate::error::GitError;
+use crate::render::ResponseFormat;
 use crate::services::write::{
     AddOptions, CommitOptions, ResetMode, ResetOptions, RestoreOptions, RevertOptions, add_files,
     commit_changes, reset_changes, restore_files, revert_commit,
 };
-use crate::tools::ok_result;
+use crate::tools::output_result;
 
 /// Action selected by the `action` parameter.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, JsonSchema)]
@@ -300,9 +299,4 @@ fn commit_options(args: &CommitArgs, message: String) -> CommitOptions {
         signing_key: args.signing_key.clone(),
         no_verify: args.no_verify,
     }
-}
-
-fn output_result(output: &str, format: ResponseFormat) -> Result<CallToolResult, GitError> {
-    let text = render_content(&to_value(output)?, format)?;
-    Ok(ok_result(text, json!({ "output": output })))
 }

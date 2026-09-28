@@ -13,6 +13,9 @@ use crate::constants::{SERVER_NAME, SERVER_VERSION};
 use crate::error::into_tool_result;
 use crate::tools::grouped::{branches, commits, context, history, remotes, status, workspace};
 use crate::tools::ok_result;
+use crate::tools::workspace::{
+    bisect, cherry_pick, merge, rebase, stash, submodule, tag, worktree,
+};
 
 /// The Git MCP server.
 #[derive(Clone)]
@@ -201,6 +204,158 @@ impl GitMcp {
         Parameters(args): Parameters<context::ContextArgs>,
     ) -> Result<CallToolResult, ErrorData> {
         into_tool_result(context::run(&args).await)
+    }
+
+    /// Stash tool.
+    #[tool(
+        name = "git_stash",
+        description = "Stash, list, apply, pop, or drop stashes.",
+        annotations(
+            title = "Git Stash",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_stash(
+        &self,
+        Parameters(args): Parameters<stash::StashArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(stash::run(&args).await)
+    }
+
+    /// Rebase tool.
+    #[tool(
+        name = "git_rebase",
+        description = "Rebase: start, continue, abort, or skip.",
+        annotations(
+            title = "Git Rebase",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_rebase(
+        &self,
+        Parameters(args): Parameters<rebase::RebaseArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(rebase::run(&args).await)
+    }
+
+    /// Cherry-pick tool.
+    #[tool(
+        name = "git_cherry_pick",
+        description = "Cherry-pick: start, continue, or abort.",
+        annotations(
+            title = "Git Cherry-Pick",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_cherry_pick(
+        &self,
+        Parameters(args): Parameters<cherry_pick::CherryPickArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(cherry_pick::run(&args).await)
+    }
+
+    /// Merge tool.
+    #[tool(
+        name = "git_merge",
+        description = "Merge: start, continue, or abort.",
+        annotations(
+            title = "Git Merge",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_merge(
+        &self,
+        Parameters(args): Parameters<merge::MergeArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(merge::run(&args).await)
+    }
+
+    /// Bisect tool.
+    #[tool(
+        name = "git_bisect",
+        description = "Bisect: start, good, bad, skip, run, or reset.",
+        annotations(
+            title = "Git Bisect",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_bisect(
+        &self,
+        Parameters(args): Parameters<bisect::BisectArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(bisect::run(&args).await)
+    }
+
+    /// Tag tool.
+    #[tool(
+        name = "git_tag",
+        description = "Tag: list, create, or delete.",
+        annotations(
+            title = "Git Tag",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_tag(
+        &self,
+        Parameters(args): Parameters<tag::TagArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(tag::run(&args).await)
+    }
+
+    /// Worktree tool.
+    #[tool(
+        name = "git_worktree",
+        description = "Worktree: add, list, remove, lock, unlock, prune, or repair.",
+        annotations(
+            title = "Git Worktree",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_worktree(
+        &self,
+        Parameters(args): Parameters<worktree::WorktreeArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(worktree::run(&args).await)
+    }
+
+    /// Submodule tool.
+    #[tool(
+        name = "git_submodule",
+        description = "Submodule: add, list, update, sync, or set_branch.",
+        annotations(
+            title = "Git Submodule",
+            read_only_hint = false,
+            idempotent_hint = false,
+            destructive_hint = true,
+            open_world_hint = false
+        )
+    )]
+    async fn git_submodule(
+        &self,
+        Parameters(args): Parameters<submodule::SubmoduleArgs>,
+    ) -> Result<CallToolResult, ErrorData> {
+        into_tool_result(submodule::run(&args).await)
     }
 }
 
